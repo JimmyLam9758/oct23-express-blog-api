@@ -11,6 +11,7 @@
 */
 
 const mongoose = require("mongoose");
+const { commentSchema } = require("./CommentSchema.js");
 
 const blogSchema = mongoose.Schema({
 	title: {
@@ -26,7 +27,7 @@ const blogSchema = mongoose.Schema({
 		required: true
 	},
 	likes: {
-		type: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
+		type: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}], 
 		required: false
 	},
 	headerImage: {
@@ -45,6 +46,16 @@ const blogSchema = mongoose.Schema({
 	editHistory: {
 		type: [{user: String, timestamp: Date}],
 		required: false
+	},
+	// This is what we would write if we do NOT use subdocuments
+	// commentsAsObj: {
+	// 	type: [{userId: {type: mongoose.Schema.Types.ObjectId, ref: "User"}, content: {type: String}}],
+	// 	required: false
+	// },
+	// This is what we would write if we DO use subdocuments
+	comments: {
+		type: [commentSchema],
+		required: false
 	}
 },
 {
@@ -55,5 +66,6 @@ const blogSchema = mongoose.Schema({
 const BlogModel = mongoose.model("Blog", blogSchema);
 
 module.exports = {
-    BlogModel
+	BlogModel
 }
+
