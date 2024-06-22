@@ -1,4 +1,4 @@
-const { app } = require("./server.js")
+const { app } = require("./server.js");
 const { databaseConnect } = require("./utils/database.js");
 
 const PORT = process.env.PORT || 3000;
@@ -7,8 +7,8 @@ const PORT = process.env.PORT || 3000;
 // databaseConnect();
 
 app.listen(PORT, () => {
-    console.log("Server successful")
+	console.log("Server successfully started!");
 
-    // After server succesfully starts, connect to the database
-    databaseConnect();
+	// After server succesfully starts, connect to the database 
+	databaseConnect();
 });
