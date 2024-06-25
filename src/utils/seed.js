@@ -1,12 +1,13 @@
 const { BlogModel } = require("../models/BlogModel");
 const { UserModel } = require("../models/UserModel");
+const { comparePasswords, createJwt, validateJwt } = require("./authHelpers");
 const { databaseConnect, databaseClear, databaseClose } = require("./database");
 
 
 async function seedUsers () {
 	let userData = [
 		{
-			username: "jimmy",
+			username: "alex",
 			password: "password"
 		},
 		{
@@ -22,19 +23,24 @@ async function seedUsers () {
 
 	console.log("Creating user with .create");
 	let callum = await UserModel.create(thirdUser);
-	
+
 	console.log("Calling save on the created user:");
 	await callum.save();
 
-	console.log("Creating users from insertMany:");
-	let result = await UserModel.insertMany(userData)
+	console.log("Callum's encrypted password is: " + callum.password);
+	let doesSupercoolMatch = await comparePasswords("supercool", callum.password);
+	console.log("Callum's password is supercool: " + doesSupercoolMatch);
 
-	// If we wanted pre-save on the insert many, this is the code to do it
-	// let result2 = await Promise.all(userData.map(async(user) => {
-	// 	let newUser = await UserModel.create(user);
-	// 	return newUser;
-	// }));
-	
+	// console.log("Creating users from insertMany:");
+	// let result = await UserModel.insertMany(userData)
+
+	// If we wanted pre-save on the insertMany, this is the code to do it: 
+	console.log("Creating users in bulk by Promise.all over usermodel.create:");
+	let result = await Promise.all(userData.map(async (user) => {
+		let newUser = await UserModel.create(user);
+		return newUser;
+	}));
+
 	console.log([...result, callum]);
 	return [...result, callum];
 }
@@ -80,7 +86,16 @@ async function seed(){
 	await databaseClear();
 
 	let newUsers = await seedUsers();
+	console.log("New users about to be given to the seedBlog function:");
+	console.log(newUsers);
 	let newBlogs = await seedBlogPosts(newUsers);
+
+
+	let newJwt = createJwt(newUsers[0]._id);
+	console.log("New JWT: " + newJwt);
+
+	validateJwt(newJwt);
+
 
 	console.log("Seeded data!");
 	await databaseClose();
