@@ -62,9 +62,19 @@ router.post("/", async (request, response, next) => {
 	});
 });
 
-router.put("/", (request, response, next) => {
+router.patch("/findById/:id", async (request, response, next) => {
+
+	let result = await BlogModel.findByIdAndUpdate(
+		request.params.id, 
+		request.body,
+		{
+			returnDocument: "after"
+		}
+	);
+
 	response.json({
-		message:"Blog router homepage"
+		message:"Blog router homepage",
+		result: result
 	});
 });
 
