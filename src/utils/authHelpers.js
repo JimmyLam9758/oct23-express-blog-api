@@ -5,53 +5,56 @@ dotenv.config();
 
 // Compare raw password to encrypted password
 async function comparePasswords(plaintextPassword, encryptedPassword) {
-    let doesPasswordMatch = false;
+	let doesPasswordMatch = false;
 
-    doesPasswordMatch = await bcrypt.compare(plaintextPassword, encryptedPassword);
+	doesPasswordMatch = await bcrypt.compare(plaintextPassword, encryptedPassword);
 
-    return doesPasswordMatch;
+	return doesPasswordMatch;
 }
 
-// Create a JWT
+// Create a JWT 
 function createJwt(userId){
-    let newJwt = jwt.sign(
-        // Payload of data
-        {id: userId},
+	let newJwt = jwt.sign(
+		// Payload of data
+		{id: userId},
 
-        // Secret key for JWT signature
-        process.env.JWT_KEY,
+		// Secret key for JWT signature
+		process.env.JWT_KEY,
 
-        // Options for JWT expiry
-        {
-            expiresIn: "7d"
-        }
-    );
+		// Options for JWT expiry
+		{
+			expiresIn: "7d"
+		}
+	);
 
-    return newJwt;
+	return newJwt;
 }
 
-
-
-// Validate a JWT
+// Validate a JWT 
 function validateJwt(jwtToValidate){
-    let isJwtValid = false;
+	let isJwtValid = false;
 
-    jwt.verify(jwtToValidate, process.env.JWT_KEY, (error, decodedJwt) => {
-        if (error){
-            throw new Error("User JWT is not valid!");
-        }
+	jwt.verify(jwtToValidate, process.env.JWT_KEY, (error, decodedJwt) => {
+		if (error){
+			throw new Error("User JWT is not valid!");
+		}
 
-        console.log("Decoded JWT data: ");
-        console.log(decodedJwt);
-        isJwtValid = true;
-    });
+		console.log("Decoded JWT data:");
+		console.log(decodedJwt);
+		isJwtValid = true;
+	});
 
-    return isJwtValid;
+	return isJwtValid;
 }
 
+function decodeJwt(jwtToDecode){
+	let decodedData = jwt.verify(jwtToDecode, process.env.JWT_KEY)
+	return decodedData;
+}
 
 module.exports = {
-    comparePasswords,
-    createJwt,
-    validateJwt
+	comparePasswords,
+	createJwt,
+	validateJwt,
+	decodeJwt
 }

@@ -47,8 +47,12 @@ router.post("/findManyQuery", async (request, response, next) => {
 
 router.post("/", async (request, response, next) => {
 
+	console.log("User signup body is:");
+	console.log(request.body);
+
 	let result = await UserModel.create(request.body).catch(error => {
 		error.status = 400;
+		console.log("Error on creating a user", error);
 		return error
 	});
 

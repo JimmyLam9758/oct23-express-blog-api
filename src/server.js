@@ -1,13 +1,13 @@
 const express = require("express");
 const app = express();
-
+const cors = require("cors");
 
 
 
 // Allows POST requests to have JSON body content
 app.use(express.json());
 
-
+app.use(cors());
 
 app.get("/", (request, response, next) => {
 
@@ -21,8 +21,10 @@ app.get("/", (request, response, next) => {
 const blogRouter = require("./controllers/BlogRouter.js");
 app.use("/blogs", blogRouter);
 
+
 const userRouter = require("./controllers/UserRouter.js");
 app.use("/users", userRouter);
+
 
 
 app.get("*", (request, response, next) => {
